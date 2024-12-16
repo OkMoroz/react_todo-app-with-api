@@ -3,16 +3,22 @@
 import React from 'react';
 import { TodoItem } from '../components/TodoItem';
 import { Todo } from '../types/Todo';
+import { Loading } from '../types/Loading';
 
 type Props = {
   todos: Todo[];
-  tempoTodo: Todo | null;
-  deletedTodo: number;
-  isDeleteCompleted: boolean;
-  onDelete: (todoId: number) => void;
+  tempTodo: Todo | null;
+  loadingId: Loading;
+  onEdit: (
+    todo: Todo,
+    key: keyof Todo,
+    value: boolean | string,
+  ) => Promise<boolean>;
+  onDelete: (todoID: number) => Promise<void>;
 };
+
 export const TodoList: React.FC<Props> = props => {
-  const { todos, tempoTodo, deletedTodo, isDeleteCompleted, onDelete } = props;
+  const { todos, tempTodo, loadingId, onEdit, onDelete } = props;
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -20,14 +26,19 @@ export const TodoList: React.FC<Props> = props => {
         <TodoItem
           todo={todo}
           key={todo.id}
-          deletedTodo={deletedTodo}
-          isDeleteCompleted={isDeleteCompleted}
-          isTempoTodo={false}
+          loadingId={loadingId}
+          onEdit={onEdit}
           onDelete={onDelete}
         />
       ))}
-      {tempoTodo && (
-        <TodoItem todo={tempoTodo} isTempoTodo={true} onDelete={onDelete} />
+
+      {tempTodo !== null && (
+        <TodoItem
+          todo={tempTodo}
+          loadingId={loadingId}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       )}
     </section>
   );

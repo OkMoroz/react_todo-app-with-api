@@ -1,47 +1,45 @@
 import React from 'react';
 import cn from 'classnames';
-import { Status } from '../types/Status';
+import { Filters } from '../types/Filters';
 import { Todo } from '../types/Todo';
 
 type Props = {
   todos: Todo[];
-  filteredStatus: Status;
-  onFilteredStatus: (stat: Status) => void;
-  todosCount: number;
-  isDeleteCompleted: boolean;
+  selectedFilter: Filters;
+  onFilteredStatus: (filter: Filters) => void;
   onDeleteCompleted: () => void;
 };
 
 export const Footer: React.FC<Props> = props => {
-  const {
-    todos,
-    filteredStatus,
-    onFilteredStatus,
-    todosCount,
-    isDeleteCompleted,
-    onDeleteCompleted,
-  } = props;
+  const { todos, selectedFilter, onFilteredStatus, onDeleteCompleted } = props;
 
-  const allStatus = Object.values(Status);
+  const filtersValue = Object.values(Filters);
+  const activeTodosCount = todos.filter(todo => !todo.completed).length;
   const isCompleted = todos.some(todo => todo.completed);
+  let isDeleteCompleted = false;
+
+  const handleDeleteCompleted = () => {
+    isDeleteCompleted = true;
+    onDeleteCompleted();
+  };
 
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {todosCount} items left
+        {activeTodosCount} items left
       </span>
       <nav className="filter" data-cy="Filter">
-        {allStatus.map(stat => (
+        {filtersValue.map(filter => (
           <a
-            key={stat}
-            href={`#/${stat !== Status.All ? stat.toLowerCase() : ''}`}
+            key={filter}
+            href={`#/${filter !== Filters.All ? filter.toLowerCase() : ''}`}
             className={cn('filter__link', {
-              selected: stat === filteredStatus,
+              selected: filter === selectedFilter,
             })}
-            data-cy={`FilterLink${stat}`}
-            onClick={() => onFilteredStatus(stat)}
+            data-cy={`FilterLink${filter}`}
+            onClick={() => onFilteredStatus(filter)}
           >
-            {stat}
+            {filter}
           </a>
         ))}
       </nav>
@@ -52,7 +50,7 @@ export const Footer: React.FC<Props> = props => {
         data-cy="ClearCompletedButton"
         disabled={isDeleteCompleted || !isCompleted}
         style={{ visibility: !isCompleted ? 'hidden' : 'visible' }}
-        onClick={onDeleteCompleted}
+        onClick={handleDeleteCompleted}
       >
         Clear completed
       </button>
