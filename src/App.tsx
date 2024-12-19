@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { addTodo, deleteTodo, getTodos, updateTodo } from './api/todos';
-// import { todos } from './api/todos';
 
 import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
@@ -17,7 +16,7 @@ import { Filters } from './types/Filters';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage | string>('');
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [filter, setFilter] = useState<Filters>(Filters.All);
   const [loadingId, setLoadingId] = useState<Loading>({});
