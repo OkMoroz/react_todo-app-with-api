@@ -1,24 +1,40 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import cn from 'classnames';
-import { Filters } from '../types/Filters';
+import { Filters } from '../types/enum/Filters';
 import { Todo } from '../types/Todo';
+import { Loading } from '../types/Loading';
 
 type Props = {
   todos: Todo[];
   selectedFilter: Filters;
   onFilteredStatus: (filter: Filters) => void;
   onDeleteCompleted: () => void;
+  setLoadingId: React.Dispatch<React.SetStateAction<Loading>>;
 };
 
 export const Footer: React.FC<Props> = props => {
-  const { todos, selectedFilter, onFilteredStatus, onDeleteCompleted } = props;
+  const {
+    todos,
+    selectedFilter,
+    onFilteredStatus,
+    onDeleteCompleted,
+    setLoadingId,
+  } = props;
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const filtersValue = Object.values(Filters);
-  const activeTodosCount = todos.filter(todo => !todo.completed).length;
-  const isCompleted = todos.some(todo => todo.completed);
+  const filtersValue = useMemo(() => Object.values(Filters), []);
+  const activeTodosCount = useMemo(
+    () => todos.filter(todo => !todo.completed).length,
+    [todos],
+  );
+  const isCompleted = useMemo(
+    () => todos.some(todo => todo.completed),
+    [todos],
+  );
   let isDeleteCompleted = false;
 
   const handleDeleteCompleted = () => {
+    setLoadingId({});
     isDeleteCompleted = true;
     onDeleteCompleted();
   };
@@ -32,7 +48,7 @@ export const Footer: React.FC<Props> = props => {
         {filtersValue.map(filter => (
           <a
             key={filter}
-            href={`#/${filter !== Filters.All ? filter.toLowerCase() : ''}`}
+            href={`#/${filter !== Filters.All && filter.toLowerCase()}`}
             className={cn('filter__link', {
               selected: filter === selectedFilter,
             })}

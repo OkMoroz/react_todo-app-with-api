@@ -29,6 +29,8 @@ export const TodoItem: React.FC<Props> = props => {
   const [newTitle, setNewTitle] = useState(todo.title);
 
   const titleForm = useRef<HTMLInputElement>(null);
+  const isActive =
+    Object.hasOwn(loadingId, todo.id) || isLoading || todo.id === 0;
 
   useEffect(() => {
     if (titleForm.current && isEditing) {
@@ -132,8 +134,7 @@ export const TodoItem: React.FC<Props> = props => {
       <div
         data-cy="TodoLoader"
         className={cn('modal overlay', {
-          'is-active':
-            Object.hasOwn(loadingId, todo.id) || isLoading || todo.id === 0,
+          'is-active': isActive,
         })}
       >
         <div className="modal-background has-background-white-ter" />

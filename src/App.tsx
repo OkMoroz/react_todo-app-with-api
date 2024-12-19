@@ -10,19 +10,24 @@ import { loadingObject } from './utils/loadingObject';
 import { filteredTodos } from './utils/filteredTodos';
 
 import { Todo } from './types/Todo';
-import { ErrorMessage } from './types/Errors';
+import { ErrorMessage } from './types/enum/Errors';
 import { Loading } from './types/Loading';
-import { Filters } from './types/Filters';
+import { Filters } from './types/enum/Filters';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [errorMessage, setErrorMessage] = useState<ErrorMessage | string>('');
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>(
+    ErrorMessage.Default,
+  );
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [filter, setFilter] = useState<Filters>(Filters.All);
   const [loadingId, setLoadingId] = useState<Loading>({});
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => setErrorMessage(''), 3000);
+    const timeoutId = setTimeout(
+      () => setErrorMessage(ErrorMessage.Default),
+      3000,
+    );
 
     getTodos()
       .then(setTodos)
@@ -34,7 +39,7 @@ export const App: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  const handleAdd = (newTodo: Todo): Promise<Todo | void> => {
+  const handleAdd = (newTodo: Todo): Promise<void> => {
     setTempTodo(newTodo);
 
     return addTodo(newTodo).then(newTodoRes => {
@@ -161,17 +166,21 @@ export const App: React.FC = () => {
           onDelete={handleDelete}
         />
 
-        {todos.length > 0 && (
+        {!!todos.length && (
           <Footer
             todos={todos}
             selectedFilter={filter}
             onFilteredStatus={setFilter}
             onDeleteCompleted={handleDeleteCompleted}
+            setLoadingId={setLoadingId}
           />
         )}
       </div>
 
-      <Errors message={errorMessage} clearError={() => setErrorMessage('')} />
+      <Errors
+        message={errorMessage}
+        clearError={() => setErrorMessage(ErrorMessage.Default)}
+      />
     </div>
   );
 };

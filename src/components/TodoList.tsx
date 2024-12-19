@@ -32,7 +32,7 @@ export const TodoList: React.FC<Props> = props => {
         />
       ))}
 
-      {tempTodo !== null && (
+      {tempTodo && (
         <TodoItem
           todo={tempTodo}
           loadingId={loadingId}

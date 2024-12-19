@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import cn from 'classnames';
 import { Todo } from '../types/Todo';
-import { ErrorMessage } from '../types/Errors';
-import { USER_ID } from '../api/todos';
+import { ErrorMessage } from '../types/enum/Errors';
+import { USER_ID } from '../api/constants';
 
 type Props = {
   todos: Todo[];
   tempTodo: Todo | null;
   onToggleAll: () => void;
   onChangeTempTodo: (tempdo: Todo | null) => void;
-  setErrorMessage: (message: string) => void;
+  setErrorMessage: (message: ErrorMessage) => void;
   onSubmit: (todo: Todo) => Promise<Todo | void>;
 };
 
